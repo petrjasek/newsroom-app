@@ -1,6 +1,8 @@
 #!/bin/bash
 # set -e
 
+echo 'starting Newsroom'
+
 cd /opt/newsroom/
 
 # wait for elastic to be up
@@ -15,10 +17,13 @@ echo 'done.'
 python3 manage.py create_user admin@localhost.com admin admin admin true
 python3 manage.py elastic_init
 
-if [[ -d dump ]]; then
+if [ -d dump ]; then
     echo 'installing demo data'
     mongorestore -h mongo --gzip dump
     python3 manage.py index_from_mongo --all
 fi
+
+echo "WEBPACK PATH at ${WEBPACK_MANIFEST_PATH}"
+ls -l ${WEBPACK_MANIFEST_PATH}
 
 exec "$@"
